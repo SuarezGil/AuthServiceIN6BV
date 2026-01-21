@@ -1,0 +1,10 @@
+namespace AuthService.Application.Interfaces;
+
+public interface ICloudinaryService
+{
+    Task<string> UploadImageAsync(IFileData imagenFile, string FileName);
+    Task<bool> DeleteImageAsync(string publicId);
+    string GetDefaultAvatarUrl();
+    string GetFullImageUrl(string imagePath);
+
+}
