@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 namespace AuthService.Domain.Entities;
 
-public| class UserProfile
+public class UserProfile
 {
     [Key]
     [MaxLength(16)]
