@@ -29,8 +29,8 @@ public class UserRole
 
 
     // es para la fecha de creacion y modificacion 
-    public DateTime CreateAt {get; set;}
+    public DateTime CreatedAt {get; set;}
 
 
-    public DateTime UpdateAt {get; set;}
+    public DateTime UpdatedAt {get; set;}
 }

@@ -1,5 +1,5 @@
-namespace AuthService.Domain.Enums;
-public static class RolConstants
+namespace AuthService.Domain.Constants;
+public static class RoleConstants
 {
     public const string USER_ROLE = "USER_ROLE";
     public const string ADMIN_ROLE = "ADMIN_ROLE";

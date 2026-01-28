@@ -15,7 +15,7 @@ public class User
 
     [Required(ErrorMessage = "El nombre es obligatorio")]
     [MaxLength(25, ErrorMessage = "El apeelido no puede tener mas de 25 caracteres")]
-    public string Surame {get;set;} = string.Empty;
+    public string Surname {get;set;} = string.Empty;
 
 
      [Required(ErrorMessage = "El nombre es obligatorio")]
@@ -37,10 +37,10 @@ public class User
     public bool Status {get;set;} =false;
 
     [Required]
-    public DateTime CrateAt {get;set;} 
+    public DateTime CreatedAt {get;set;} 
 
     [Required]
-    public DateTime UpdateAt {get;set;}
+    public DateTime UpdatedAt {get;set;}
 
     public UserProfile userProfile {get; set;} =null!;
     public ICollection<UserRole> UserRoles {get;set;}=[];
