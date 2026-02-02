@@ -102,7 +102,7 @@ public class PasswordHashService : IPasswordHashService
 
     private bool VerifyLegacyFormat(string password, string hashedPassword)
     {
-        var hashBytes = Convert.FromBase64String(hashedPassword):
+        var hashBytes = Convert.FromBase64String(hashedPassword);
         var salt = new byte [SaltSize];
         var hash = new byte [HashSize];
 
@@ -127,7 +127,7 @@ public class PasswordHashService : IPasswordHashService
         switch (base64.Length % 4)
         {
             case 2:
-                base64 += "==";
+                base64 += "==";cg
             break;
             case 3:
                 base64 += "=";
