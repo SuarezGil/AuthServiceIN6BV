@@ -127,7 +127,7 @@ public class PasswordHashService : IPasswordHashService
         switch (base64.Length % 4)
         {
             case 2:
-                base64 += "==";cg
+                base64 += "==";
             break;
             case 3:
                 base64 += "=";
