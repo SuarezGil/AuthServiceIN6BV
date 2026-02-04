@@ -1,9 +1,9 @@
-using AuthServiceIN6BV.Application.Interfaces;
+using AuthService.Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 
-namespace AuthServiceIN6BV.Application.Services;
+namespace AuthService.Application.Services;
 
 public class CloudinaryService(IConfiguration configuration) : ICloudinaryService
 {

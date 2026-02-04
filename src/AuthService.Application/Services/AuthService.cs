@@ -1,19 +1,22 @@
-using AuthServiceIN6BV.Application.DTOs;
-using AuthServiceIN6BV.Application.Interfaces;
-using AuthServiceIN6BV.Application.Exceptions;
-using AuthServiceIN6BV.Application.Extensions;
-using AuthServiceIN6BV.Application.Validators;
-using AuthServiceIN6BV.Domain.Constants;
-using AuthServiceIN6BV.Domain.Entities;
-using AuthServiceIN6BV.Domain.Interfaces;
-using AuthServiceIN6BV.Domain.Enums;
+using AuthService.Application.DTOs;
+using AuthService.Application.Interfaces;
+using AuthService.Application.Exceptions;
+using AuthService.Application.Extensions;
+using AuthService.Application.Validators;
+using AuthService.Domain.Constants;
+using AuthService.Domain.Entities;
+using AuthService.Domain.Interfaces;
+using AuthService.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using AuthServiceIN6BV.Application.DTOs.Email;
+using AuthService.Application.DTOs.Email;
+using AuthServiceRoger.Application.Exception;
+using AuthService.Application.Services;
+using AuthService.Domain.Application.DTOs;
 
-namespace AuthServiceIN6BV.Application.Services;
+namespace AuthService.Application.Services;
 
-public class AuthService(
+public class AuthServices(
     IUserRepository userRepository,
     IRoleRepository roleRepository,
     IPasswordHashService passwordHashService,
@@ -21,7 +24,7 @@ public class AuthService(
     ICloudinaryService cloudinaryService,
     IEmailService emailService,
     IConfiguration configuration,
-    ILogger<AuthService> logger) : IAuthService
+    ILogger<AuthServices> logger) : IAuthService
 {
     private readonly ICloudinaryService _cloudinaryService = cloudinaryService;
     public async Task<RegisterResponseDto> RegisterAsync(RegisterDto registerDto)
@@ -69,7 +72,7 @@ public class AuthService(
         }
 
         // Crear nuevo usuario y entidades relacionadas
-        var emailVerificationToken = TokenGenerator.GenerateEmailVerificationToken();
+        var emailVerificationToken = TokenGeneratorService.GenerateEmailVerificationToken();
 
         var userId = UuidGenerator.GenerateUserId();
         var userProfileId = UuidGenerator.GenerateUserId();
@@ -92,7 +95,7 @@ public class AuthService(
             Email = registerDto.Email.ToLowerInvariant(),
             Password = passwordHashService.HashPassword(registerDto.Password),
             Status = false,
-            UserProfile = new UserProfile
+            userProfile = new UserProfile
             {
                 Id = userProfileId,
                 UserId = userId,
@@ -211,8 +214,8 @@ public class AuthService(
             Surname = user.Surname,
             Username = user.Username,
             Email = user.Email,
-            ProfilePicture = _cloudinaryService.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
-            Phone = user.UserProfile?.Phone ?? string.Empty,
+            ProfilePicture = _cloudinaryService.GetFullImageUrl(user.userProfile?.ProfilePicture ?? string.Empty),
+            Phone = user.userProfile?.Phone ?? string.Empty,
             Role = userRole,
             Status = user.Status,
             IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
@@ -227,7 +230,7 @@ public class AuthService(
         {
             Id = user.Id,
             Username = user.Username,
-            ProfilePicture = _cloudinaryService.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
+            ProfilePicture = _cloudinaryService.GetFullImageUrl(user.userProfile?.ProfilePicture ?? string.Empty),
             Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE
         };
     }
@@ -299,7 +302,7 @@ public class AuthService(
         }
 
         // Generar nuevo token
-        var newToken = TokenGenerator.GenerateEmailVerificationToken();
+        var newToken = TokenGeneratorService.GenerateEmailVerificationToken();
         user.UserEmail.EmailVerificationToken = newToken;
         user.UserEmail.EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
 
@@ -343,7 +346,7 @@ public class AuthService(
         }
 
         // Generar token de reset
-        var resetToken = TokenGenerator.GeneratePasswordResetToken();
+        var resetToken = TokenGeneratorService.GeneratePasswordResetToken();
 
         if (user.UserPasswordReset == null)
         {

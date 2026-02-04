@@ -1,10 +1,10 @@
-using AuthServiceIN6BV.Application.DTOs;
-using AuthServiceIN6BV.Application.Interfaces;
-using AuthServiceIN6BV.Domain.Constants;
-using AuthServiceIN6BV.Domain.Entities;
-using AuthServiceIN6BV.Domain.Interfaces;
+using AuthService.Application.DTOs;
+using AuthService.Application.Interfaces;
+using AuthService.Domain.Constants;
+using AuthService.Domain.Entities;
+using AuthService.Domain.Interfaces;
 
-namespace AuthServiceIN6BV.Application.Services;
+namespace AuthService.Application.Services;
 
 public class UserManagementService(IUserRepository users, IRoleRepository roles, ICloudinaryService cloudinary) : IUserManagementService
 {
@@ -15,7 +15,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
 
         // Validate inputs
         if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("Invalid userId", nameof(userId));
-        if (!RoleConstants.AllowedRoles.Contains(roleName))
+        if (!RoleConstants.AllRoles.Contains(roleName))
             throw new InvalidOperationException($"Role not allowed. Use {RoleConstants.ADMIN_ROLE} or {RoleConstants.USER_ROLE}");
 
         // Load user with roles
@@ -51,8 +51,8 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Surname = user.Surname,
             Username = user.Username,
             Email = user.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
-            Phone = user.UserProfile?.Phone ?? string.Empty,
+            ProfilePicture = cloudinary.GetFullImageUrl(user.userProfile?.ProfilePicture ?? string.Empty),
+            Phone = user.userProfile?.Phone ?? string.Empty,
             Role = role.Name,
             Status = user.Status,
             IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
@@ -67,10 +67,10 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
         return roleNames;
     }
 
-    public async Task<IReadOnlyList<UserResponseDto>> GetUsersByRoleAsync(string roleName)
+    public async Task<IReadOnlyList<UserResponseDto>> GetUserByRoleAsync(string roleName)
     {
         roleName = roleName?.Trim().ToUpperInvariant() ?? string.Empty;
-        var usersInRole = await roles.GetUsersByRoleAsync(roleName);
+        var usersInRole = await roles.GetUserByRoleAsync(roleName);
         return usersInRole.Select(u => new UserResponseDto
         {
             Id = u.Id,
@@ -78,8 +78,8 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Surname = u.Surname,
             Username = u.Username,
             Email = u.Email,
-            ProfilePicture = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePicture ?? string.Empty),
-            Phone = u.UserProfile?.Phone ?? string.Empty,
+            ProfilePicture = cloudinary.GetFullImageUrl(u.userProfile?.ProfilePicture ?? string.Empty),
+            Phone = u.userProfile?.Phone ?? string.Empty,
             Role = roleName,
             Status = u.Status,
             IsEmailVerified = u.UserEmail?.EmailVerified ?? false,

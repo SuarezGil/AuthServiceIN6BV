@@ -78,13 +78,13 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         return true;
     }
 
-    public async Task<bool> ExistByEmailAsync(string email)
+    public async Task<bool> ExistsByEmailAsync(string email)
     {
         return await context.Users.AnyAsync(u => EF.Functions.ILike(u.Email, email));
     }
 
     
-    public async Task<bool> ExistByUsernameAsync(string username)
+    public async Task<bool> ExistsByUsernameAsync(string username)
     {
         return await context.Users.AnyAsync(u => EF.Functions.ILike(u.Username, username));
     }
